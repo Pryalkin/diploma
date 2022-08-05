@@ -1,6 +1,9 @@
 server:
   port: 8081
 
+jwt:
+  secret: 'PryalkinPavelPavlovich'
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/portal
