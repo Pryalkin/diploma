@@ -2,10 +2,7 @@ package com.pryalkin.portal.exception;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.pryalkin.portal.entity.HttpResponse;
-import com.pryalkin.portal.exception.model.EmailExistException;
-import com.pryalkin.portal.exception.model.EmailNotFoundException;
-import com.pryalkin.portal.exception.model.UserNotFoundException;
-import com.pryalkin.portal.exception.model.UsernameExistException;
+import com.pryalkin.portal.exception.model.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +25,16 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 public class ExceptionHandling {
+
+    @ExceptionHandler(EmailIsInvalidException.class)
+    public ResponseEntity<HttpResponse> emailIsInvalidException(EmailIsInvalidException exception){
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
+    }
+
+    @ExceptionHandler(UsernameIsInvalidException.class)
+    public ResponseEntity<HttpResponse> usernameIsInvalidException(UsernameIsInvalidException exception){
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
+    }
 
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<HttpResponse> accountDisabledException() {
