@@ -13,7 +13,6 @@ import java.util.Properties;
 
 import static com.pryalkin.portal.constant.EmailConstant.*;
 
-
 @Service
 public class EmailService {
 

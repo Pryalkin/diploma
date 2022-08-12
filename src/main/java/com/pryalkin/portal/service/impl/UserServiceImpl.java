@@ -1,7 +1,9 @@
 package com.pryalkin.portal.service.impl;
 
+import com.pryalkin.portal.entity.HttpResponse;
 import com.pryalkin.portal.entity.User;
 import com.pryalkin.portal.entity.UserPrincipal;
+import com.pryalkin.portal.enumeration.Role;
 import com.pryalkin.portal.exception.model.*;
 import com.pryalkin.portal.repository.UserRepository;
 import com.pryalkin.portal.service.EmailService;
@@ -13,14 +15,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -29,7 +40,9 @@ import java.util.regex.Pattern;
 import static com.pryalkin.portal.constant.FileConstant.*;
 import static com.pryalkin.portal.constant.UserImplConstant.*;
 import static com.pryalkin.portal.enumeration.Role.ROLE_USER;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @Service
 @Transactional
@@ -99,18 +112,80 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findAll();
     }
 
-    private User validateNewUsernameAndEmail(String currentUsername, String newUsername, String newEmail) throws UserNotFoundException, UsernameExistException, EmailExistException, UsernameIsInvalidException, EmailIsInvalidException {
-        Pattern patternForUsername = Pattern.compile("[A-Za-z][A-Za-z0-9_$]+");
-        Matcher matcherForUsername = patternForUsername.matcher(newUsername);
-        boolean validateNewUsername = matcherForUsername.find();
-        if (!validateNewUsername){
-            throw new UsernameIsInvalidException(NOT_A_VALID_USERNAME + newUsername);
+    @Override
+    public User editUser(String currentUsername, String newFirstName, String newLastName, String newUsername, String newEmail) throws UserNotFoundException, EmailIsInvalidException, EmailExistException, UsernameIsInvalidException, UsernameExistException{
+        User currentUser = validateNewUsernameAndEmail(currentUsername, newUsername, newEmail);
+        currentUser.setFirstName(newFirstName);
+        currentUser.setLastName(newLastName);
+        currentUser.setUsername(newUsername);
+        currentUser.setEmail(newEmail);
+        userRepository.save(currentUser);
+//        saveProfileImage(currentUser, profileImage);
+        return currentUser;
+    }
+
+    @Override
+    public void deleteUser(long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public void resetPassword(String email) throws MessagingException, EmailNotFoundException {
+        User user = userRepository.findByEmail(email);
+        if (user == null){
+            throw new EmailNotFoundException(NO_USER_FOUND_BY_EMAIL + email);
         }
-        Pattern patternForEmail = Pattern.compile("\\b[A-Za-z0-9_$.%+-]+@[A-Za-z0-9.]+\\.[A-Za-z]{2,4}\\b");
-        Matcher matcherForEmail = patternForEmail.matcher(newEmail);
-        boolean validateNewEmail = matcherForEmail.find();
-        if (!validateNewEmail){
-            throw new EmailIsInvalidException(NOT_A_VALID_EMAIL + newEmail);
+        String password = generatePassword();
+        user.setPassword(encodePassword(password));
+        userRepository.save(user);
+        emailService.sendNewPasswordEmail(user.getFirstName(), password, user.getEmail());
+    }
+
+    @Override
+    public User updateProfileImage(String username, MultipartFile profileImage) throws UserNotFoundException, EmailIsInvalidException, EmailExistException, UsernameIsInvalidException, UsernameExistException, IOException {
+        User user = validateNewUsernameAndEmail(username, null, null);
+        saveProfileImage(user, profileImage);
+        return user;
+    }
+
+    private void saveProfileImage(User user, MultipartFile profileImage) throws IOException {
+        if (profileImage != null){
+            Path userFolder = Paths.get(USER_FOLDER + user.getUsername()).toAbsolutePath().normalize();
+            if (!Files.exists(userFolder)){
+                Files.createDirectories(userFolder);
+            }
+            Files.deleteIfExists(Paths.get(userFolder + user.getUsername() + DOT + JPG_EXTENSION));
+            Files.copy(profileImage.getInputStream(), userFolder.resolve(user.getUsername() + DOT + JPG_EXTENSION), REPLACE_EXISTING);
+            user.setProfileImageUrl(setProfileImageUrl(user.getUsername()));
+            userRepository.save(user);
+        }
+    }
+
+    private String setProfileImageUrl(String username) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().
+                path(USER_IMAGE_PATH + username + FORWARD_SLASH + username + DOT + JPG_EXTENSION).toUriString();
+    }
+
+    private Role getRoleEnumName(String role) {
+        return Role.valueOf(role.toUpperCase());
+    }
+
+    private User validateNewUsernameAndEmail(String currentUsername, String newUsername, String newEmail) throws UserNotFoundException, UsernameExistException, EmailExistException, UsernameIsInvalidException, EmailIsInvalidException {
+        if (newUsername != null) {
+            Pattern patternForUsername = Pattern.compile("[A-Za-z][A-Za-z0-9_$]+");
+            Matcher matcherForUsername = patternForUsername.matcher(newUsername);
+            boolean validateNewUsername = matcherForUsername.find();
+            if (!validateNewUsername) {
+                throw new UsernameIsInvalidException(NOT_A_VALID_USERNAME + newUsername);
+            }
+        }
+        if (newEmail != null){
+            Pattern patternForEmail = Pattern.compile("\\b[A-Za-z0-9_$.%+-]+@[A-Za-z0-9.]+\\.[A-Za-z]{2,4}\\b");
+            Matcher matcherForEmail = patternForEmail.matcher(newEmail);
+            boolean validateNewEmail = matcherForEmail.find();
+            if (!validateNewEmail){
+                throw new EmailIsInvalidException(NOT_A_VALID_EMAIL + newEmail);
+            }
         }
         User userByNewUsername = findUserByUsername(newUsername);
         User userByNewEmail = findUserByEmail(newEmail);
