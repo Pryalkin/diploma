@@ -1,13 +1,13 @@
 package com.pryalkin.portal.entity;
 
 import com.pryalkin.portal.entity.user.User;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 
 @Entity
@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class Rating implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Min(0)
     @Max(10)

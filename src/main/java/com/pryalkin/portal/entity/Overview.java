@@ -17,9 +17,10 @@ import java.util.List;
 public class Overview implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String group;
+    @Column(name = "group_overview")
+    private String groupOverview;
     private String topic;
     @OneToMany
     private List<Text> texts;

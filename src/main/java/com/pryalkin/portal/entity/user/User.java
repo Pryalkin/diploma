@@ -43,8 +43,4 @@ public class User implements Serializable {
     @Column(name = "is_not_locked")
     private boolean isNotLocked;
 
-
-
-
-
 }
