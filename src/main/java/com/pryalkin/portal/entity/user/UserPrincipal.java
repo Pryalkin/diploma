@@ -1,5 +1,6 @@
-package com.pryalkin.portal.entity;
+package com.pryalkin.portal.entity.user;
 
+import com.pryalkin.portal.entity.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

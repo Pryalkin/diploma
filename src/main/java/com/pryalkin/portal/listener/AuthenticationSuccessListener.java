@@ -1,6 +1,6 @@
 package com.pryalkin.portal.listener;
 
-import com.pryalkin.portal.entity.UserPrincipal;
+import com.pryalkin.portal.entity.user.UserPrincipal;
 import com.pryalkin.portal.service.LoginAttemptService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.event.EventListener;

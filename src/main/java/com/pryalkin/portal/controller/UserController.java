@@ -1,8 +1,8 @@
 package com.pryalkin.portal.controller;
 
 import com.pryalkin.portal.entity.HttpResponse;
-import com.pryalkin.portal.entity.User;
-import com.pryalkin.portal.entity.UserPrincipal;
+import com.pryalkin.portal.entity.user.User;
+import com.pryalkin.portal.entity.user.UserPrincipal;
 import com.pryalkin.portal.exception.ExceptionHandling;
 import com.pryalkin.portal.exception.model.*;
 import com.pryalkin.portal.service.UserService;

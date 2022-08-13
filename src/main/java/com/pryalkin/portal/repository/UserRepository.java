@@ -1,8 +1,7 @@
 package com.pryalkin.portal.repository;
 
-import com.pryalkin.portal.entity.User;
+import com.pryalkin.portal.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository

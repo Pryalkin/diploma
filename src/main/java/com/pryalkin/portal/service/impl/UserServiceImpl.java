@@ -1,8 +1,7 @@
 package com.pryalkin.portal.service.impl;
 
-import com.pryalkin.portal.entity.HttpResponse;
-import com.pryalkin.portal.entity.User;
-import com.pryalkin.portal.entity.UserPrincipal;
+import com.pryalkin.portal.entity.user.User;
+import com.pryalkin.portal.entity.user.UserPrincipal;
 import com.pryalkin.portal.enumeration.Role;
 import com.pryalkin.portal.exception.model.*;
 import com.pryalkin.portal.repository.UserRepository;
@@ -15,15 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -42,7 +37,6 @@ import static com.pryalkin.portal.constant.UserImplConstant.*;
 import static com.pryalkin.portal.enumeration.Role.ROLE_USER;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @Service
 @Transactional

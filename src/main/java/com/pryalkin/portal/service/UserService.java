@@ -1,6 +1,6 @@
 package com.pryalkin.portal.service;
 
-import com.pryalkin.portal.entity.User;
+import com.pryalkin.portal.entity.user.User;
 import com.pryalkin.portal.exception.model.*;
 import org.springframework.messaging.MessagingException;
 import org.springframework.web.multipart.MultipartFile;
