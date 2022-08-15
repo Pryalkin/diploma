@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -42,5 +43,7 @@ public class User implements Serializable {
     private boolean isActive;
     @Column(name = "is_not_locked")
     private boolean isNotLocked;
+    @OneToMany
+    private List<User> subscribers;
 
 }

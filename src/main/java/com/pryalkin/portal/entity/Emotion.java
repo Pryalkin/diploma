@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -20,4 +21,5 @@ public class Emotion implements Serializable {
     private String emotion;
     @OneToOne
     private User user;
+    private Date date;
 }

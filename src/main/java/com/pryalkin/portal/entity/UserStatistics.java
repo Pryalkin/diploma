@@ -1,34 +1,40 @@
 package com.pryalkin.portal.entity;
 
 import com.pryalkin.portal.entity.user.User;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Comment implements Serializable {
+public class UserStatistics implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Size(min = 1, max = 500)
-    private String comment;
     @OneToOne
     private User user;
-    @Column(name = "date_of_creation")
-    private Date dateOfCreation;
+    @OneToMany
+    private List<Comment> comments;
+    @OneToMany
+    private List<Subcomment> subcomments;
+    @OneToMany
+    private List<User> subscriptions; // подписки
+    @OneToMany
+    private List<User> subscribes; // подписчики
+    @OneToOne
+    private OverviewStatistics overviewStatistics;
     @OneToMany
     private List<Popularity> popularity;
     @OneToMany
-    private List<Subcomment> subcomments;
+    private List<Emotion> emotions;
+    @OneToMany
+    private List<Viewing> views;
+
 }

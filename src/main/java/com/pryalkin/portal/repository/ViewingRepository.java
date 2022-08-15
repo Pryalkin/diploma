@@ -1,9 +1,9 @@
 package com.pryalkin.portal.repository;
 
-import com.pryalkin.portal.entity.Tag;
+import com.pryalkin.portal.entity.Viewing;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TagRepository extends JpaRepository<Tag, Long> {
+public interface ViewingRepository extends JpaRepository<Viewing, Long> {
 }
