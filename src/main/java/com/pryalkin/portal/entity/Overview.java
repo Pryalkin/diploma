@@ -23,11 +23,20 @@ public class Overview implements Serializable {
     private String groupOverview;
     private String topic;
     @OneToMany
-    private List<Message> messages;
+    private List<Text> texts;
     @Column(name = "date_of_creation")
     private Date dateOfCreation;
     @OneToMany
+    private List<Tag> tags;
+    @OneToMany
     private List<Image> images;
+    @OneToMany
+    private List<Emotion> emotions;
+    @OneToMany
+    private List<Comment> comments;
+    @OneToMany
+    private List<Rating> ratings;
+    private int views;
     @OneToOne
     private User user;
 

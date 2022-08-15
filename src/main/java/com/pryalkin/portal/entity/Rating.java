@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -22,8 +21,7 @@ public class Rating implements Serializable {
     private Long id;
     @Min(0)
     @Max(10)
-    private int grade;
-    private Date valuationDate;
+    private int rating;
     @OneToOne
     private User user;
 }

@@ -10,7 +10,6 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -27,7 +26,6 @@ public class Subcomment implements Serializable {
     private User user;
     @Column(name = "date_of_creation")
     private Date dateOfCreation;
-    @OneToMany
-    private List<Popularity> popularity;
+    private Long rating;
 
 }

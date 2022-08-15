@@ -27,8 +27,7 @@ public class Comment implements Serializable {
     private User user;
     @Column(name = "date_of_creation")
     private Date dateOfCreation;
-    @OneToMany
-    private List<Popularity> popularity;
+    private Long rating;
     @OneToMany
     private List<Subcomment> subcomments;
 }
